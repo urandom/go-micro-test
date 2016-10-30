@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+service Todo {
+	// TodoList returns a list of todo items.
+	rpc TodoList(TodoListRequest) returns (TodoListResponse);
+}
+
+service Profiler {
+	// UserProfile returns a user profile.
+	rpc UserProfile(UserRequest) returns (UserResponse);
+}
+
+// TodoListRequest is used for fetching a user's todo list
+message TodoListRequest {
+	string user = 1;
+	int64 limit = 2;
+	int64 offset = 3;
+}
+
+message TodoEntry {
+	string title = 1;
+	string body = 2;
+}
+
+message TodoListResponse {
+	bool exists = 1;
+	repeated TodoEntry entries  = 2;
+}
+
+message UserRequest {
+	string user = 1;
+}
+
+message UserResponse {
+	bool exists = 1;
+
+	UserProfile profile = 2;
+}
+
+message UserProfile {
+	string user = 1;
+	string name = 2;
+	string pass = 3;
+}

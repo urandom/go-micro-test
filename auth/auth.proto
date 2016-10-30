@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+service Generator {
+	// Generate generates an auth token.
+	rpc Generate(GenerateRequest) returns (GenerateResponse);
+}
+
+service Checker {
+	// Check tests the auth string for validity.
+	rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+service Profiler {
+	// UserProfile returns a user profile.
+	rpc UserProfile(ProfileRequest) returns (ProfileResponse);
+}
+
+message GenerateRequest {
+	string user = 1;
+	string pass = 2;
+}
+
+message GenerateResponse {
+	bool exists = 1;
+	string auth = 2;
+}
+
+message CheckRequest {
+	string auth = 1;
+}
+
+message CheckResponse {
+	bool valid = 1;
+	bool expired = 2;
+	string user = 3;
+}
+
+message ProfileRequest {
+	string auth = 1;
+}
+
+message ProfileResponse {
+	bool exists = 1;
+
+	AuthProfile profile = 2;
+}
+
+message AuthProfile {
+	string user = 1;
+	string name = 2;
+}
