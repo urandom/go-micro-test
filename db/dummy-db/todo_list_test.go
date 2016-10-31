@@ -79,7 +79,10 @@ func TestTodoList(t *testing.T) {
 
 			req := &db.TodoListRequest{tc.user, tc.limit, tc.offset}
 			resp := &db.TodoListResponse{}
-			h.List(context.TODO(), req, resp)
+
+			if err := h.List(context.TODO(), req, resp); err != nil {
+				t.Fatal(err)
+			}
 
 			if resp.Exists != tc.exists {
 				t.Fatalf("expected exists %v, got %v", tc.exists, resp.Exists)
