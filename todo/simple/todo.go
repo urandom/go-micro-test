@@ -10,12 +10,12 @@ import (
 )
 
 type todoHandler struct {
-	dbTodo      db.TodoClient
-	userChecker auth.CheckerClient
+	dbTodo db.TodoClient
+	token  auth.TokenClient
 }
 
-func (h *todoHandler) List(ctx context.Context, req *todo.Request, resp *todo.Response) error {
-	userResp, err := h.userChecker.Check(ctx, &auth.CheckRequest{req.Auth})
+func (h *todoHandler) List(ctx context.Context, req *todo.ListRequest, resp *todo.ListResponse) error {
+	userResp, err := h.token.Check(ctx, &auth.TokenCheckRequest{req.Auth})
 	if err != nil {
 		return errors.Wrap(err, "getting user")
 	}
@@ -24,7 +24,7 @@ func (h *todoHandler) List(ctx context.Context, req *todo.Request, resp *todo.Re
 		return nil
 	}
 
-	todoResp, err := h.dbTodo.TodoList(ctx, &db.TodoListRequest{userResp.User, req.Limit, req.Offset})
+	todoResp, err := h.dbTodo.List(ctx, &db.TodoListRequest{userResp.User, req.Limit, req.Offset})
 	if err != nil {
 		return errors.Wrap(err, "getting todo items from db")
 	}

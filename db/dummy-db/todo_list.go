@@ -8,7 +8,7 @@ import (
 
 type todoHandler struct{}
 
-func (h *todoHandler) TodoList(ctx context.Context, req *db.TodoListRequest, resp *db.TodoListResponse) error {
+func (h *todoHandler) List(ctx context.Context, req *db.TodoListRequest, resp *db.TodoListResponse) error {
 	if req.Limit <= 0 {
 		resp.Entries, resp.Exists = todoData[req.User]
 		return nil

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"golang.org/x/net/context"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -9,11 +11,36 @@ import (
 	"github.com/urandom/go-micro-test/db"
 )
 
-type checkerHandler struct {
-	dbProfiler db.ProfilerClient
+type tokenHandler struct {
+	dbUser db.UserClient
 }
 
-func (h *checkerHandler) Check(ctx context.Context, req *auth.CheckRequest, resp *auth.CheckResponse) error {
+func (h *tokenHandler) Generate(ctx context.Context, req *auth.TokenGenerateRequest, resp *auth.TokenGenerateResponse) error {
+	p, err := h.dbUser.Profile(ctx, &db.UserProfileRequest{req.User})
+	if err != nil {
+		return errors.Wrap(err, "getting the user from db")
+	}
+
+	if p.Exists && p.Profile.Pass == req.Pass {
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+			Subject:   req.User,
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		})
+
+		tokenStr, err := token.SignedString(auth.SecretKey)
+		if err != nil {
+			return errors.Wrap(err, "generating jwt token string")
+		}
+
+		resp.Exists = true
+		resp.Auth = tokenStr
+	}
+
+	return nil
+}
+
+func (h *tokenHandler) Check(ctx context.Context, req *auth.TokenCheckRequest, resp *auth.TokenCheckResponse) error {
 	user, err := parseToken(req.Auth)
 	if err == nil {
 		resp.Valid = true

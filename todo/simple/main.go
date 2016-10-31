@@ -16,10 +16,10 @@ func main() {
 
 	service.Init()
 
-	checker := auth.NewCheckerClient(auth.JWT, service.Client())
+	token := auth.NewTokenClient(auth.JWT, service.Client())
 	dbTodo := db.NewTodoClient(db.DummyDB, service.Client())
 
-	todo.RegisterServiceHandler(service.Server(), &todoHandler{dbTodo, checker})
+	todo.RegisterTodoHandler(service.Server(), &todoHandler{dbTodo, token})
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

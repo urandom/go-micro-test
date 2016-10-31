@@ -1,13 +1,15 @@
 syntax = "proto3";
 
+package db;
+
 service Todo {
 	// TodoList returns a list of todo items.
-	rpc TodoList(TodoListRequest) returns (TodoListResponse);
+	rpc List(TodoListRequest) returns (TodoListResponse);
 }
 
-service Profiler {
+service User {
 	// UserProfile returns a user profile.
-	rpc UserProfile(UserRequest) returns (UserResponse);
+	rpc Profile(UserProfileRequest) returns (UserProfileResponse);
 }
 
 // TodoListRequest is used for fetching a user's todo list
@@ -27,11 +29,11 @@ message TodoListResponse {
 	repeated TodoEntry entries  = 2;
 }
 
-message UserRequest {
+message UserProfileRequest {
 	string user = 1;
 }
 
-message UserResponse {
+message UserProfileResponse {
 	bool exists = 1;
 
 	UserProfile profile = 2;

@@ -6,9 +6,9 @@ import (
 	"github.com/urandom/go-micro-test/db"
 )
 
-type profilerHandler struct{}
+type userHandler struct{}
 
-func (h *profilerHandler) UserProfile(ctx context.Context, req *db.UserRequest, resp *db.UserResponse) error {
+func (h *userHandler) Profile(ctx context.Context, req *db.UserProfileRequest, resp *db.UserProfileResponse) error {
 	resp.Profile, resp.Exists = profileData[req.User]
 
 	return nil

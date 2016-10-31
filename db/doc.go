@@ -3,5 +3,5 @@ package db
 //go:generate protoc --go_out=plugins=micro:. db.proto
 
 const (
-	DummyDB = "micro-test-dummy-db"
+	DummyDB = "org.sugr.micro.test.db.dummy"
 )

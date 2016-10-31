@@ -15,11 +15,10 @@ func main() {
 
 	service.Init()
 
-	dbProfiler := db.NewProfilerClient(db.DummyDB, service.Client())
+	dbUser := db.NewUserClient(db.DummyDB, service.Client())
 
-	auth.RegisterGeneratorHandler(service.Server(), &generatorHandler{dbProfiler})
-	auth.RegisterCheckerHandler(service.Server(), &checkerHandler{dbProfiler})
-	auth.RegisterProfilerHandler(service.Server(), &profilerHandler{dbProfiler})
+	auth.RegisterTokenHandler(service.Server(), &tokenHandler{dbUser})
+	auth.RegisterUserHandler(service.Server(), &userHandler{dbUser})
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

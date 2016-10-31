@@ -8,13 +8,13 @@ import (
 	"github.com/urandom/go-micro-test/db"
 )
 
-type profilerHandler struct {
-	dbProfiler db.ProfilerClient
+type userHandler struct {
+	dbUser db.UserClient
 }
 
-func (h *profilerHandler) UserProfile(ctx context.Context, req *auth.ProfileRequest, resp *auth.ProfileResponse) error {
+func (h *userHandler) Profile(ctx context.Context, req *auth.UserProfileRequest, resp *auth.UserProfileResponse) error {
 	if user, err := parseToken(req.Auth); err == nil {
-		if ur, err := h.dbProfiler.UserProfile(ctx, &db.UserRequest{user}); err == nil {
+		if ur, err := h.dbUser.Profile(ctx, &db.UserProfileRequest{user}); err == nil {
 			resp.Exists = ur.Exists
 			if ur.Exists {
 				resp.Profile = &auth.AuthProfile{User: ur.Profile.User, Name: ur.Profile.Name}
