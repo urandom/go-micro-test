@@ -15,8 +15,8 @@ func main() {
 
 	service.Init()
 
-	db.RegisterTodoHandler(service.Server(), &todoHandler{})
-	db.RegisterUserHandler(service.Server(), &userHandler{})
+	db.RegisterTodoHandler(service.Server(), todoHandler{})
+	db.RegisterUserHandler(service.Server(), userHandler{})
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

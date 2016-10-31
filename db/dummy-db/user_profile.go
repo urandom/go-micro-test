@@ -8,7 +8,7 @@ import (
 
 type userHandler struct{}
 
-func (h *userHandler) Profile(ctx context.Context, req *db.UserProfileRequest, resp *db.UserProfileResponse) error {
+func (h userHandler) Profile(ctx context.Context, req *db.UserProfileRequest, resp *db.UserProfileResponse) error {
 	resp.Profile, resp.Exists = profileData[req.User]
 
 	return nil
