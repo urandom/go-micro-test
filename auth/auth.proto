@@ -14,37 +14,60 @@ service User {
 	rpc Profile(UserProfileRequest) returns (UserProfileResponse);
 }
 
+// TokenGenerateRequest is the request data for generating an authentication
+// token.
 message TokenGenerateRequest {
+	// User is the desired username.
 	string user = 1;
+	// Pass is the password for the user.
 	string pass = 2;
 }
 
+// TokenGenerateResponse is the result of the authentication token generation.
 message TokenGenerateResponse {
+	// Exists will be true if the user exists
 	bool exists = 1;
+	// Auth is the authentication token.
 	string auth = 2;
 }
 
+// TokenCheckRequest is the request data for checking an authentication token
+// for validity.
 message TokenCheckRequest {
+	// Auth is the authentication token to check.
 	string auth = 1;
 }
 
+// TokenCheckResponse is the result of the validation request.
 message TokenCheckResponse {
+	// Valid will be true if the token is valid.
 	bool valid = 1;
+	// Expired will be true if the token is no longer valid due to it being too
+	// old.
 	bool expired = 2;
+	// User is the user for which the authentication token was generated.
 	string user = 3;
 }
 
+// UserProfileRequest is the request data for getting a user's profile.
 message UserProfileRequest {
+	// Auth is the authentication token.
 	string auth = 1;
 }
 
+// UserProfileResponse is the response data from a user profile request.
 message UserProfileResponse {
+	// Exists is true if the user exists.
 	bool exists = 1;
 
+	// Profile is the profile data for the user.
 	AuthProfile profile = 2;
 }
 
+// AuthProfile
 message AuthProfile {
+	// User is the user name.
 	string user = 1;
+	// Name is the full name of the user.
 	string name = 2;
 }

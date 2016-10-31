@@ -40,8 +40,12 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+// TokenGenerateRequest is the request data for generating an authentication
+// token.
 type TokenGenerateRequest struct {
+	// User is the desired username.
 	User string `protobuf:"bytes,1,opt,name=user" json:"user,omitempty"`
+	// Pass is the password for the user.
 	Pass string `protobuf:"bytes,2,opt,name=pass" json:"pass,omitempty"`
 }
 
@@ -50,9 +54,12 @@ func (m *TokenGenerateRequest) String() string            { return proto.Compact
 func (*TokenGenerateRequest) ProtoMessage()               {}
 func (*TokenGenerateRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
+// TokenGenerateResponse is the result of the authentication token generation.
 type TokenGenerateResponse struct {
-	Exists bool   `protobuf:"varint,1,opt,name=exists" json:"exists,omitempty"`
-	Auth   string `protobuf:"bytes,2,opt,name=auth" json:"auth,omitempty"`
+	// Exists will be true if the user exists
+	Exists bool `protobuf:"varint,1,opt,name=exists" json:"exists,omitempty"`
+	// Auth is the authentication token.
+	Auth string `protobuf:"bytes,2,opt,name=auth" json:"auth,omitempty"`
 }
 
 func (m *TokenGenerateResponse) Reset()                    { *m = TokenGenerateResponse{} }
@@ -60,7 +67,10 @@ func (m *TokenGenerateResponse) String() string            { return proto.Compac
 func (*TokenGenerateResponse) ProtoMessage()               {}
 func (*TokenGenerateResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
+// TokenCheckRequest is the request data for checking an authentication token
+// for validity.
 type TokenCheckRequest struct {
+	// Auth is the authentication token to check.
 	Auth string `protobuf:"bytes,1,opt,name=auth" json:"auth,omitempty"`
 }
 
@@ -69,10 +79,15 @@ func (m *TokenCheckRequest) String() string            { return proto.CompactTex
 func (*TokenCheckRequest) ProtoMessage()               {}
 func (*TokenCheckRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
+// TokenCheckResponse is the result of the validation request.
 type TokenCheckResponse struct {
-	Valid   bool   `protobuf:"varint,1,opt,name=valid" json:"valid,omitempty"`
-	Expired bool   `protobuf:"varint,2,opt,name=expired" json:"expired,omitempty"`
-	User    string `protobuf:"bytes,3,opt,name=user" json:"user,omitempty"`
+	// Valid will be true if the token is valid.
+	Valid bool `protobuf:"varint,1,opt,name=valid" json:"valid,omitempty"`
+	// Expired will be true if the token is no longer valid due to it being too
+	// old.
+	Expired bool `protobuf:"varint,2,opt,name=expired" json:"expired,omitempty"`
+	// User is the user for which the authentication token was generated.
+	User string `protobuf:"bytes,3,opt,name=user" json:"user,omitempty"`
 }
 
 func (m *TokenCheckResponse) Reset()                    { *m = TokenCheckResponse{} }
@@ -80,7 +95,9 @@ func (m *TokenCheckResponse) String() string            { return proto.CompactTe
 func (*TokenCheckResponse) ProtoMessage()               {}
 func (*TokenCheckResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
 
+// UserProfileRequest is the request data for getting a user's profile.
 type UserProfileRequest struct {
+	// Auth is the authentication token.
 	Auth string `protobuf:"bytes,1,opt,name=auth" json:"auth,omitempty"`
 }
 
@@ -89,8 +106,11 @@ func (m *UserProfileRequest) String() string            { return proto.CompactTe
 func (*UserProfileRequest) ProtoMessage()               {}
 func (*UserProfileRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
 
+// UserProfileResponse is the response data from a user profile request.
 type UserProfileResponse struct {
-	Exists  bool         `protobuf:"varint,1,opt,name=exists" json:"exists,omitempty"`
+	// Exists is true if the user exists.
+	Exists bool `protobuf:"varint,1,opt,name=exists" json:"exists,omitempty"`
+	// Profile is the profile data for the user.
 	Profile *AuthProfile `protobuf:"bytes,2,opt,name=profile" json:"profile,omitempty"`
 }
 
@@ -106,8 +126,11 @@ func (m *UserProfileResponse) GetProfile() *AuthProfile {
 	return nil
 }
 
+// AuthProfile
 type AuthProfile struct {
+	// User is the user name.
 	User string `protobuf:"bytes,1,opt,name=user" json:"user,omitempty"`
+	// Name is the full name of the user.
 	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
 }
 
