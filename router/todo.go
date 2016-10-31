@@ -10,7 +10,7 @@ import (
 )
 
 type todoHandler struct {
-	todo todo.ServiceClient
+	todo todo.TodoClient
 }
 
 func (h todoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -25,10 +25,10 @@ func (h todoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := h.todo.List(context.TODO(), &todo.Request{Auth: token})
+	resp, err := h.todo.List(context.TODO(), &todo.ListRequest{Auth: token})
 	if err != nil {
 		log.Printf("Error getting todo list: %v", err)
-		http.Error(w, "getting user todo list", http.StatusBadRequest)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -40,7 +40,7 @@ func (h todoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	b, err := json.Marshal(resp.Items)
 	if err != nil {
 		log.Printf("Error marshaling todo items to json: %v", err)
-		http.Error(w, "marshaling todo items", http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 

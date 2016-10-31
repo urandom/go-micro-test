@@ -11,7 +11,7 @@ import (
 )
 
 type profileHandler struct {
-	profiler auth.ProfilerClient
+	user auth.UserClient
 }
 
 func (h profileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -26,10 +26,10 @@ func (h profileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := h.profiler.UserProfile(context.TODO(), &auth.ProfileRequest{token})
+	resp, err := h.user.Profile(context.TODO(), &auth.UserProfileRequest{token})
 	if err != nil {
 		log.Printf("Error getting user profile: %v", err)
-		http.Error(w, "getting user profile", http.StatusBadRequest)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -41,7 +41,7 @@ func (h profileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	b, err := json.Marshal(resp.Profile)
 	if err != nil {
 		log.Printf("Error marshaling profile to json: %v", err)
-		http.Error(w, "marshaling profile", http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
