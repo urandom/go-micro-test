@@ -1,4 +1,4 @@
-// Package db provides the service definitions for getting data from an
+// Package db provides the various service clients for getting data from an
 // implementation.
 package db
 

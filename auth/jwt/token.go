@@ -43,8 +43,15 @@ func (h *tokenHandler) Generate(ctx context.Context, req *auth.TokenGenerateRequ
 func (h *tokenHandler) Check(ctx context.Context, req *auth.TokenCheckRequest, resp *auth.TokenCheckResponse) error {
 	user, err := parseToken(req.Auth)
 	if err == nil {
-		resp.Valid = true
-		resp.User = user
+		p, err := h.dbUser.Profile(ctx, &db.UserProfileRequest{user})
+		if err != nil {
+			return errors.Wrap(err, "getting the user from db")
+		}
+
+		if p.Exists {
+			resp.Valid = true
+			resp.User = user
+		}
 	} else if vErr, ok := errors.Cause(err).(*jwt.ValidationError); ok {
 		if vErr.Errors&jwt.ValidationErrorExpired > 0 {
 			resp.Expired = true
