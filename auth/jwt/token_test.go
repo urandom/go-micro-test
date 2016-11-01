@@ -62,7 +62,7 @@ func TestGenerate(t *testing.T) {
 			resp := &auth.TokenGenerateResponse{}
 
 			if err := h.Generate(context.TODO(), req, resp); err != nil {
-				if tc.err == nil && errors.Cause(err) != tc.err {
+				if tc.err == nil || errors.Cause(err) != tc.err {
 					t.Fatal(err)
 				}
 			}
@@ -118,27 +118,11 @@ func TestCheck(t *testing.T) {
 		t.Run(fmt.Sprintf("case %d", i), func(t *testing.T) {
 			h := tokenHandler{userClient{tc.dbexists, tc.profile, tc.err}}
 
-			expiresAt := time.Now().Add(time.Hour).Unix()
-			if tc.expired {
-				expiresAt = time.Now().Add(-1 * time.Hour).Unix()
-			}
-
-			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-				Subject:   tc.user,
-				IssuedAt:  time.Now().Unix(),
-				ExpiresAt: expiresAt,
-			})
-
-			tokenStr, err := token.SignedString(auth.SecretKey)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			req := &auth.TokenCheckRequest{tokenStr}
+			req := &auth.TokenCheckRequest{token(t, tc.user, tc.expired)}
 			resp := &auth.TokenCheckResponse{}
 
 			if err := h.Check(context.TODO(), req, resp); err != nil {
-				if tc.err == nil && errors.Cause(err) != tc.err {
+				if tc.err == nil || errors.Cause(err) != tc.err {
 					t.Fatal(err)
 				}
 			}
@@ -178,4 +162,24 @@ func (c userClient) Profile(ctx context.Context, in *db.UserProfileRequest, opts
 	resp := &db.UserProfileResponse{c.exists, &c.profile}
 
 	return resp, nil
+}
+
+func token(t *testing.T, user string, expired bool) string {
+	expiresAt := time.Now().Add(time.Hour).Unix()
+	if expired {
+		expiresAt = time.Now().Add(-1 * time.Hour).Unix()
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		Subject:   user,
+		IssuedAt:  time.Now().Unix(),
+		ExpiresAt: expiresAt,
+	})
+
+	tokenStr, err := token.SignedString(auth.SecretKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return tokenStr
 }
