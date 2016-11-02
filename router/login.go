@@ -35,7 +35,7 @@ func (h loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !resp.Exists {
-		http.NotFound(w, r)
+		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 

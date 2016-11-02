@@ -22,7 +22,7 @@ func (h profileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	token := checkAuth(r)
 	if token == "" {
-		http.Error(w, "wrong auth", http.StatusBadRequest)
+		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 
@@ -34,7 +34,7 @@ func (h profileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !resp.Exists {
-		http.NotFound(w, r)
+		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 
