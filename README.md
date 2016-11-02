@@ -26,3 +26,11 @@ The ./router starts an http server that proxies requests to the various services
    * GET /user/todo - for a valid JWT token in the Authorization header, it returns a list of todo items formatted as json.
    
 The `start-services.sh` script is a bash script that starts consul and all 4 services.
+
+#### Example
+
+Using curl to produce a valid auth token and then fetch the user's profile:
+
+```
+curl -H "Authorization: Bearer $(curl -d 'user=foo&password=foopass' http://localhost:8080/user/login)" http://localhost:8080/user
+```
